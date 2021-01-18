@@ -4,8 +4,11 @@ var alien, alien_ufo
 var backdrop, background_moving
 var backdroptwo, backdrop_moving
 
-var obstaclesGroup, obstacle1,obstacle2,obstacle3,obstacle4,obstacle5
+var obstaclesGroup,obstacle1,obstacle,obstacle2,obstacle3,obstacle4,obstacle5
 
+var PLAY = 1;
+var END = 0;
+var gameState = PLAY;
 
 
 function preload() {
@@ -38,17 +41,16 @@ function setup() {
   astronaut.scale = 0.1;
   alien.addImage("ufo",alien_ufo);
   alien.scale = 0.5;
+  obstaclesGroup = new Group();
 }
 
 
 function draw() {
   background("#060E1D");
+  
+  if(gameState === PLAY){
   backdrop.velocityX = -5;
   backdroptwo.velocityX = -5; 
-
-  //if(backdrop.x < 0) {
-    //backdrop.x = backdrop.width/2
-  //}
 
   if(backdroptwo.x < 0) {
     backdrop.x = backdrop.width/2;
@@ -65,6 +67,16 @@ function draw() {
     alien.y = alien.y + 3
   }
 
+  if(astronaut.isTouching(obstaclesGroup)) {
+    alien.x = alien.x + 2;
+  };
+
+}
+
+
+
+
+
 
   spawnObstacles();
 
@@ -74,14 +86,44 @@ function draw() {
 function spawnObstacles(){
   var rand = random (0,displayHeight);
 if (frameCount %60 === 0) {
-  obstacle1 = createSprite(displayWidth + 10, rand, 20,20);
-  obstacle1.velocityX = -5;
-  obstacle1.lifetime = displayWidth/5;
+  obstacle = createSprite(displayWidth + 10, rand, 20,20);
+  obstacle.scale = 0.2
+  obstacle.setCollider("circle",0,0,10);
+  obstacle.velocityX = -5;
+  obstacle.lifetime = displayWidth/5;
+  var randImg = Math.round(random(1,5));
+
+  switch (randImg) {
+        
+    case 1: obstacle.addImage(obstacle1);
+    
+      break;
+    
+     case 2: obstacle.addImage(obstacle2);
+      break;
+    
+     case 3: obstacle.addImage(obstacle3);
+      break;
+    
+     case 4: obstacle.addImage(obstacle4);
+      break;
+    
+     case 5: obstacle.addImage(obstacle5);
+      break;
+
+      default:
+        break;
+       
+    } 
+    
+    obstacle.debug = true;
+    obstaclesGroup.add(obstacle);
+    
 
 }
 
-//obstacle2 = createSprite(displayWidth + 10, rand, 20,20);
-//var randImg = Math.round(random(1,5));
+
+
 
 
 }
