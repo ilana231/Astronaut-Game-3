@@ -6,8 +6,12 @@ var backdroptwo, backdrop_moving
 
 var obstaclesGroup,obstacle1,obstacle,obstacle2,obstacle3,obstacle4,obstacle5
 
+var youwonimg,youwon;
+var youlostimg,youlost;
+
 var PLAY = 1;
-var END = 0;
+var LOSE = 0;
+var WIN = 2; 
 var gameState = PLAY;
 
 
@@ -21,6 +25,8 @@ obstacle2= loadImage("rock.png");
 obstacle3= loadImage("rock 2.png");
 obstacle4= loadImage("little alien.png");
 obstacle5= loadImage("satellite.png");
+youwonimg= loadImage("you won.png");
+youlostimg= loadImage("you lost.png");
 
 }
 
@@ -42,6 +48,13 @@ function setup() {
   alien.addImage("ufo",alien_ufo);
   alien.scale = 0.5;
   obstaclesGroup = new Group();
+  youwon = createSprite(displayWidth/2, displayHeight/2,50,50);
+  youwon.addImage("you won", youwonimg);
+  youlost = createSprite(displayWidth/2,displayHeight/2,50,50);
+  youlost.addImage("you lost", youlostimg);
+  youlost.scale = 0.5;
+  astronaut.setCollider("circle",0,0,600);
+  alien.setCollider("circle",0,0,200);
 }
 
 
@@ -71,16 +84,46 @@ function draw() {
     alien.x = alien.x + 2;
   };
 
+  if(frameCount === 800){
+    gameState = WIN;
+  }
+
+  if(alien.isTouching(astronaut)){
+    gameState = LOSE;
+  }
+
+  youwon.visible = false;
+  youlost.visible = false;
+
+  spawnObstacles();
+
 }
 
 
 
+if(gameState === WIN){
+  backdrop.velocityX = 0;
+  backdroptwo.velocityX = 0;
+  obstaclesGroup.setVelocityXEach(0);
+  obstaclesGroup.setLifetimeEach(-1);
+  youwon.visible = true;
+}
 
+if(gameState === LOSE){
+  backdrop.velocityX = 0;
+  backdroptwo.velocityX = 0;
+  obstaclesGroup.setVelocityXEach(0);
+  obstaclesGroup.setLifetimeEach(-1);
+  youlost.visible = true;
+  
+}
 
-
-  spawnObstacles();
+  astronaut.debug = true;
+  alien.debug =true;
 
   drawSprites();
+
+text(frameCount,displayWidth - 100, 100);
 }
 
 function spawnObstacles(){
@@ -88,7 +131,7 @@ function spawnObstacles(){
 if (frameCount %60 === 0) {
   obstacle = createSprite(displayWidth + 10, rand, 20,20);
   obstacle.scale = 0.2
-  obstacle.setCollider("circle",0,0,10);
+  obstacle.setCollider("circle",0,0,200);
   obstacle.velocityX = -5;
   obstacle.lifetime = displayWidth/5;
   var randImg = Math.round(random(1,5));
